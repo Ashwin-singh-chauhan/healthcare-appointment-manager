@@ -2,7 +2,6 @@ package com.healthcare.manager.config;
 
 import com.healthcare.manager.security.JwtAuthenticationFilter;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,38 +24,32 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // Frontend URL
-    @Value("${frontend.url:http://localhost:5173}")
-    private String frontendUrl;
-
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // ==========================================
+    // =========================================================
     // PASSWORD ENCODER
-    // ==========================================
+    // =========================================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ==========================================
+    // =========================================================
     // CORS CONFIGURATION
-    // ==========================================
+    // =========================================================
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
                 List.of(
-                        frontendUrl,
                         "https://healthcare-appointment-manager-gamma.vercel.app"
                 )
         );
@@ -89,9 +82,9 @@ public class SecurityConfig {
         return source;
     }
 
-    // ==========================================
+    // =========================================================
     // SECURITY FILTER CHAIN
-    // ==========================================
+    // =========================================================
 
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -103,7 +96,7 @@ public class SecurityConfig {
                 // CORS
                 .cors(cors -> {})
 
-                // CSRF disabled because we use JWT
+                // CSRF disabled because this is a JWT API
                 .csrf(AbstractHttpConfigurer::disable)
 
                 // Stateless JWT authentication
@@ -113,112 +106,81 @@ public class SecurityConfig {
                         )
                 )
 
-                // ==========================================
-                // AUTHORIZATION RULES
-                // ==========================================
+                // =================================================
+                // AUTHORIZATION
+                // =================================================
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // ------------------------------
-                        // HEALTH
-                        // ------------------------------
-
+                        // Health check
                         .requestMatchers(
                                 "/api/health"
                         ).permitAll()
 
+                        // Spring error endpoint
                         .requestMatchers(
                                 "/error"
                         ).permitAll()
 
-                        // ------------------------------
-                        // CORS PREFLIGHT
-                        // ------------------------------
-
+                        // CORS preflight
                         .requestMatchers(
                                 HttpMethod.OPTIONS,
                                 "/**"
                         ).permitAll()
 
-                        // ------------------------------
-                        // AUTH
-                        // ------------------------------
-
+                        // Authentication
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/auth/register",
                                 "/api/auth/login"
                         ).permitAll()
 
-                        // ------------------------------
-                        // TEST DOCTOR CREATION
-                        // ------------------------------
-
+                        // Temporary doctor test endpoint
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/auth/create-doctor-test"
                         ).permitAll()
 
-                        // ------------------------------
-                        // DOCTORS
-                        // ------------------------------
-
+                        // Public doctor endpoints
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/doctors",
                                 "/api/doctors/**"
                         ).permitAll()
 
-                        // ------------------------------
-                        // AVAILABILITY
-                        // ------------------------------
-
+                        // Public availability
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/availability/doctor/**"
                         ).permitAll()
 
+                        // Doctor's own availability
                         .requestMatchers(
                                 "/api/availability/my"
                         ).hasRole("DOCTOR")
 
-                        // ------------------------------
-                        // ADMIN AVAILABILITY
-                        // ------------------------------
-
+                        // Admin availability
                         .requestMatchers(
                                 "/api/admin/availability/**"
                         ).hasRole("ADMIN")
 
-                        // ------------------------------
-                        // ADMIN APPOINTMENTS
-                        // ------------------------------
-
+                        // Admin appointments
                         .requestMatchers(
                                 "/api/admin/appointments/**"
                         ).hasRole("ADMIN")
 
-                        // ------------------------------
-                        // ADMIN LEAVES
-                        // ------------------------------
-
+                        // Admin leaves
                         .requestMatchers(
                                 "/api/admin/leaves/**"
                         ).hasRole("ADMIN")
 
-                        // ------------------------------
-                        // SLOTS
-                        // ------------------------------
-
+                        // Public slots
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/slots/doctor/**"
                         ).permitAll()
 
-                        // ------------------------------
-                        // PATIENT APPOINTMENTS
-                        // ------------------------------
-
+                        // Patient appointments
                         .requestMatchers(
                                 "/api/appointments/my"
                         ).hasRole("PATIENT")
@@ -233,49 +195,31 @@ public class SecurityConfig {
                                 "/api/appointments/**"
                         ).hasRole("PATIENT")
 
-                        // ------------------------------
-                        // DOCTOR LEAVES
-                        // ------------------------------
-
-                        .requestMatchers(
-                                "/api/doctor/leaves/**"
-                        ).hasRole("DOCTOR")
-
-                        // ------------------------------
-                        // DOCTOR APPOINTMENTS
-                        // ------------------------------
-
+                        // Doctor appointments
                         .requestMatchers(
                                 "/api/appointments/doctor/my"
                         ).hasRole("DOCTOR")
 
-                        // ------------------------------
-                        // DOCTOR APIs
-                        // ------------------------------
+                        // Doctor leaves
+                        .requestMatchers(
+                                "/api/doctor/leaves/**"
+                        ).hasRole("DOCTOR")
 
+                        // Doctor APIs
                         .requestMatchers(
                                 "/api/doctor/**"
                         ).hasRole("DOCTOR")
 
-                        // ------------------------------
-                        // ADMIN APIs
-                        // ------------------------------
-
+                        // Admin APIs
                         .requestMatchers(
                                 "/api/admin/**"
                         ).hasRole("ADMIN")
 
-                        // ------------------------------
-                        // EVERYTHING ELSE
-                        // ------------------------------
-
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 );
 
-        // ==========================================
-        // JWT FILTER
-        // ==========================================
-
+        // JWT filter
         http.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
