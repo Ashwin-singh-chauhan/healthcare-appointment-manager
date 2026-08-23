@@ -3,8 +3,10 @@ package com.healthcare.manager.service;
 import com.healthcare.manager.dto.AuthResponse;
 import com.healthcare.manager.dto.LoginRequest;
 import com.healthcare.manager.dto.RegisterRequest;
+import com.healthcare.manager.entity.Doctor;
 import com.healthcare.manager.entity.Role;
 import com.healthcare.manager.entity.User;
+import com.healthcare.manager.repository.DoctorRepository;
 import com.healthcare.manager.repository.UserRepository;
 import com.healthcare.manager.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,15 +16,18 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     public AuthService(
             UserRepository userRepository,
+            DoctorRepository doctorRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService
     ) {
         this.userRepository = userRepository;
+        this.doctorRepository = doctorRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -95,25 +100,58 @@ public class AuthService {
                 user.getRole().name()
         );
     }
+
     public void createDoctorTestUser() {
 
         String email = "rahul@healthcare.com";
 
-        if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Doctor user already exists");
+        /*
+         * Create the USER if it doesn't already exist.
+         */
+        User user = userRepository
+                .findByEmail(email)
+                .orElse(null);
+
+        if (user == null) {
+
+            user = new User();
+
+            user.setName("Dr. Rahul Sharma");
+            user.setEmail(email);
+
+            user.setPassword(
+                    passwordEncoder.encode("Doctor@123")
+            );
+
+            user.setRole(Role.DOCTOR);
+
+            user = userRepository.save(user);
+
+        } else {
+
+            /*
+             * Make sure the existing test user
+             * has DOCTOR role.
+             */
+            if (user.getRole() != Role.DOCTOR) {
+                user.setRole(Role.DOCTOR);
+                userRepository.save(user);
+            }
         }
 
-        User user = new User();
+        /*
+         * Create the DOCTOR profile if it doesn't exist.
+         */
+        if (doctorRepository.findByEmail(email).isEmpty()) {
 
-        user.setName("Dr. Rahul Sharma");
-        user.setEmail(email);
+            Doctor doctor = new Doctor(
+                    "Dr. Rahul Sharma",
+                    "General Physician",
+                    email,
+                    "9876543210"
+            );
 
-        user.setPassword(
-                passwordEncoder.encode("Doctor@123")
-        );
-
-        user.setRole(Role.DOCTOR);
-
-        userRepository.save(user);
+            doctorRepository.save(doctor);
+        }
     }
 }
