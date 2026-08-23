@@ -58,7 +58,7 @@ const styles = {
   page: {
     minHeight: "100vh",
     fontFamily: "Arial, sans-serif",
-    background: "#f8fafc",
+    background: "#F5FAF7",
   },
 
   nav: {
@@ -68,7 +68,7 @@ const styles = {
     justifyContent: "space-between",
     padding: "0 8%",
     background: "white",
-    borderBottom: "1px solid #e5e7eb",
+    borderBottom: "1px solid #DCEBE2",
   },
 
   link: {
@@ -79,55 +79,32 @@ const styles = {
 
   button: {
     textDecoration: "none",
-    background: "#2563eb",
+    background: "#4C9B6E",
     color: "white",
     padding: "10px 18px",
     borderRadius: "8px",
   },
 
-  hero: {
-    maxWidth: "1100px",
-    margin: "0 auto",
-    padding: "100px 30px",
-  },
-
   badge: {
-    color: "#2563eb",
+    color: "#4C9B6E",
     fontWeight: "bold",
     letterSpacing: "1px",
-  },
-
-  title: {
-    fontSize: "52px",
-    lineHeight: "1.1",
-    color: "#0f172a",
-    marginBottom: "25px",
-  },
-
-  subtitle: {
-    maxWidth: "600px",
-    fontSize: "18px",
-    lineHeight: "1.7",
-    color: "#64748b",
-    marginBottom: "35px",
   },
 
   primary: {
     display: "inline-block",
     textDecoration: "none",
-    background: "#2563eb",
+    background: "#4C9B6E",
     color: "white",
     padding: "14px 24px",
     borderRadius: "8px",
-    marginRight: "15px",
   },
 
   secondary: {
     display: "inline-block",
     textDecoration: "none",
-    color: "#2563eb",
+    color: "#4C9B6E",
     padding: "14px 24px",
   },
 };
-
 export default Home;
