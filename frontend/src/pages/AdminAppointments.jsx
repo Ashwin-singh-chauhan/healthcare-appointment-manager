@@ -615,29 +615,33 @@ function formatDate(date) {
 
 const styles = {
 
+  // ==========================================
+  // PAGE
+  // ==========================================
+
   page: {
     minHeight: "100vh",
-    background: "#f3faf6",
-    color: "#18352a",
+    background: "#DCEFF0",
+    color: "#12313B",
     fontFamily:
       "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif",
   },
 
 
-  // =========================
+  // ==========================================
   // NAVBAR
-  // =========================
+  // ==========================================
 
   nav: {
     minHeight: "76px",
     padding: "0 6%",
-    background: "#ffffff",
-    borderBottom: "1px solid #d8eee1",
+    background: "#123B4A",
+    borderBottom: "1px solid #0E5363",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     boxSizing: "border-box",
-    boxShadow: "0 2px 12px rgba(45, 110, 76, 0.05)",
+    boxShadow: "0 4px 18px rgba(18, 59, 74, 0.18)",
   },
 
   brandSection: {
@@ -647,37 +651,33 @@ const styles = {
   },
 
   brandIcon: {
-    width: "40px",
-    height: "40px",
-    borderRadius: "11px",
-    background: "#69bd8b",
-    color: "#ffffff",
+    width: "42px",
+    height: "42px",
+    borderRadius: "12px",
+    background: "#12A8A8",
+    color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "27px",
-    fontWeight: "700",
-    boxShadow: "0 5px 14px rgba(80, 160, 110, 0.25)",
+    fontWeight: "800",
+    boxShadow: "0 5px 15px rgba(18, 168, 168, 0.35)",
   },
 
   brand: {
     margin: 0,
     fontSize: "23px",
     fontWeight: "750",
-    color: "#173d2c",
+    color: "#F4FFFF",
     letterSpacing: "-0.5px",
-  },
-
-  brandSpan: {
-    color: "#4f9f70",
   },
 
   adminLabel: {
     marginTop: "2px",
     fontSize: "9px",
     fontWeight: "800",
-    letterSpacing: "1.5px",
-    color: "#73aa8b",
+    letterSpacing: "1.7px",
+    color: "#8FD5D7",
   },
 
   navActions: {
@@ -687,9 +687,9 @@ const styles = {
   },
 
   backButton: {
-    border: "1px solid #c9e5d5",
-    background: "#f4fbf7",
-    color: "#397d58",
+    border: "1px solid #387080",
+    background: "#1A4B5B",
+    color: "#E8FAFA",
     padding: "10px 17px",
     borderRadius: "9px",
     cursor: "pointer",
@@ -699,20 +699,20 @@ const styles = {
 
   logout: {
     border: "none",
-    background: "#4f9d6e",
-    color: "white",
+    background: "#D65A5A",
+    color: "#FFFFFF",
     padding: "10px 18px",
     borderRadius: "9px",
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: "650",
-    boxShadow: "0 4px 10px rgba(66, 140, 93, 0.2)",
+    boxShadow: "0 4px 10px rgba(214, 90, 90, 0.25)",
   },
 
 
-  // =========================
+  // ==========================================
   // MAIN
-  // =========================
+  // ==========================================
 
   container: {
     maxWidth: "1180px",
@@ -732,7 +732,7 @@ const styles = {
     fontSize: "11px",
     fontWeight: "800",
     letterSpacing: "1.8px",
-    color: "#5a9f76",
+    color: "#087F8C",
     marginBottom: "8px",
   },
 
@@ -742,40 +742,41 @@ const styles = {
     lineHeight: "1.15",
     fontWeight: "750",
     letterSpacing: "-1px",
-    color: "#173b2b",
+    color: "#123B4A",
   },
 
   subtitle: {
     marginTop: "10px",
     marginBottom: 0,
-    color: "#688174",
+    color: "#45636B",
     fontSize: "16px",
     lineHeight: "1.6",
   },
 
   headerIcon: {
-    width: "66px",
-    height: "66px",
+    width: "68px",
+    height: "68px",
     borderRadius: "18px",
-    background: "#d9f0e1",
+    background: "#B8DCDD",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "30px",
-    border: "1px solid #c3e5d0",
+    border: "1px solid #91C8CA",
+    boxShadow: "0 5px 15px rgba(18, 59, 74, 0.08)",
   },
 
 
-  // =========================
+  // ==========================================
   // FILTER CARD
-  // =========================
+  // ==========================================
 
   filterCard: {
-    background: "#ffffff",
-    padding: "26px",
+    background: "#C9E4E5",
+    padding: "28px",
     borderRadius: "18px",
-    border: "1px solid #d8eee1",
-    boxShadow: "0 8px 28px rgba(48, 104, 73, 0.07)",
+    border: "1px solid #9CCBCD",
+    boxShadow: "0 8px 25px rgba(18, 59, 74, 0.10)",
     marginBottom: "25px",
   },
 
@@ -787,27 +788,28 @@ const styles = {
   },
 
   filterIcon: {
-    width: "42px",
-    height: "42px",
-    borderRadius: "11px",
-    background: "#e1f3e7",
-    color: "#4b986b",
+    width: "44px",
+    height: "44px",
+    borderRadius: "12px",
+    background: "#087F8C",
+    color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "19px",
+    boxShadow: "0 5px 12px rgba(8, 127, 140, 0.25)",
   },
 
   filterTitle: {
     margin: 0,
-    color: "#1d4632",
+    color: "#123B4A",
     fontSize: "18px",
-    fontWeight: "700",
+    fontWeight: "750",
   },
 
   filterSubtitle: {
     margin: "4px 0 0",
-    color: "#789083",
+    color: "#45636B",
     fontSize: "13px",
   },
 
@@ -824,20 +826,20 @@ const styles = {
   },
 
   label: {
-    color: "#315541",
+    color: "#244C58",
     fontSize: "13px",
-    fontWeight: "700",
+    fontWeight: "750",
     marginBottom: "8px",
   },
 
   inputWrapper: {
     display: "flex",
     alignItems: "center",
-    border: "1px solid #cce5d6",
+    border: "1px solid #8DBFC2",
     borderRadius: "10px",
-    background: "#fbfefc",
-    transition: "all 0.2s ease",
+    background: "#EAF7F6",
     overflow: "hidden",
+    boxShadow: "inset 0 1px 2px rgba(18, 59, 74, 0.04)",
   },
 
   inputIcon: {
@@ -853,24 +855,24 @@ const styles = {
     border: "none",
     outline: "none",
     fontSize: "14px",
-    color: "#244936",
+    color: "#123B4A",
     background: "transparent",
   },
 
 
-  // =========================
+  // ==========================================
   // ERROR
-  // =========================
+  // ==========================================
 
   error: {
     display: "flex",
     alignItems: "flex-start",
     gap: "12px",
-    background: "#fff3f1",
-    color: "#9b4036",
+    background: "#F7DCDC",
+    color: "#8E3838",
     padding: "15px 17px",
     borderRadius: "12px",
-    border: "1px solid #f4d4ce",
+    border: "1px solid #E6B5B5",
     marginBottom: "25px",
   },
 
@@ -878,8 +880,8 @@ const styles = {
     width: "23px",
     height: "23px",
     borderRadius: "50%",
-    background: "#dc6b5e",
-    color: "#ffffff",
+    background: "#C94C4C",
+    color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -893,16 +895,16 @@ const styles = {
   },
 
 
-  // =========================
-  // APPOINTMENT CARD
-  // =========================
+  // ==========================================
+  // APPOINTMENTS CARD
+  // ==========================================
 
   card: {
-    background: "#ffffff",
+    background: "#EAF7F6",
     padding: "30px",
     borderRadius: "18px",
-    border: "1px solid #d8eee1",
-    boxShadow: "0 8px 28px rgba(48, 104, 73, 0.07)",
+    border: "1px solid #A8D2D4",
+    boxShadow: "0 8px 25px rgba(18, 59, 74, 0.10)",
   },
 
   cardHeader: {
@@ -911,43 +913,44 @@ const styles = {
     alignItems: "center",
     marginBottom: "25px",
     paddingBottom: "20px",
-    borderBottom: "1px solid #e5f1e9",
+    borderBottom: "1px solid #BBDCDD",
   },
 
   sectionLabel: {
     fontSize: "10px",
     letterSpacing: "1.5px",
     fontWeight: "800",
-    color: "#72a989",
+    color: "#087F8C",
     marginBottom: "5px",
   },
 
   cardTitle: {
     margin: 0,
-    color: "#183c2b",
+    color: "#123B4A",
     fontSize: "23px",
-    fontWeight: "720",
+    fontWeight: "750",
   },
 
   muted: {
-    color: "#789083",
+    color: "#557078",
     fontSize: "13px",
     margin: "5px 0 0",
   },
 
   countBox: {
-    minWidth: "82px",
-    padding: "10px 14px",
-    borderRadius: "12px",
-    background: "#e1f3e7",
-    border: "1px solid #c8e8d3",
+    minWidth: "85px",
+    padding: "11px 15px",
+    borderRadius: "13px",
+    background: "#087F8C",
+    border: "1px solid #08737E",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    boxShadow: "0 5px 13px rgba(8, 127, 140, 0.22)",
   },
 
   countNumber: {
-    color: "#3f895e",
+    color: "#FFFFFF",
     fontSize: "22px",
     fontWeight: "800",
     lineHeight: "1",
@@ -955,7 +958,7 @@ const styles = {
 
   countLabel: {
     marginTop: "4px",
-    color: "#69947a",
+    color: "#CDEFF0",
     fontSize: "9px",
     fontWeight: "700",
     textTransform: "uppercase",
@@ -963,13 +966,13 @@ const styles = {
   },
 
 
-  // =========================
+  // ==========================================
   // TABLE
-  // =========================
+  // ==========================================
 
   tableWrapper: {
     overflowX: "auto",
-    border: "1px solid #dceee3",
+    border: "1px solid #A8D2D4",
     borderRadius: "13px",
   },
 
@@ -982,9 +985,9 @@ const styles = {
   th: {
     textAlign: "left",
     padding: "14px 17px",
-    background: "#f1faf4",
-    borderBottom: "1px solid #d5ebdd",
-    color: "#527462",
+    background: "#C9E4E5",
+    borderBottom: "1px solid #A8D2D4",
+    color: "#244C58",
     fontSize: "11px",
     fontWeight: "800",
     textTransform: "uppercase",
@@ -993,10 +996,10 @@ const styles = {
 
   td: {
     padding: "17px",
-    borderBottom: "1px solid #e7f1eb",
-    color: "#345342",
+    borderBottom: "1px solid #C5DFE0",
+    color: "#294B55",
     fontSize: "14px",
-    background: "#ffffff",
+    background: "#EAF7F6",
   },
 
   row: {
@@ -1013,7 +1016,7 @@ const styles = {
     width: "30px",
     height: "30px",
     borderRadius: "8px",
-    background: "#e5f4ea",
+    background: "#B8DCDD",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -1021,7 +1024,7 @@ const styles = {
   },
 
   time: {
-    color: "#28523b",
+    color: "#123B4A",
     fontSize: "14px",
   },
 
@@ -1032,11 +1035,11 @@ const styles = {
   },
 
   avatar: {
-    width: "37px",
-    height: "37px",
+    width: "38px",
+    height: "38px",
     borderRadius: "50%",
-    background: "#cfead9",
-    color: "#3f855b",
+    background: "#087F8C",
+    color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -1046,13 +1049,13 @@ const styles = {
   },
 
   patientName: {
-    fontWeight: "700",
-    color: "#234936",
+    fontWeight: "750",
+    color: "#123B4A",
   },
 
   patientId: {
     fontSize: "11px",
-    color: "#94a79c",
+    color: "#678087",
     marginTop: "3px",
   },
 
@@ -1062,9 +1065,9 @@ const styles = {
     gap: "6px",
     padding: "6px 11px",
     borderRadius: "20px",
-    background: "#dff3e6",
-    color: "#317c51",
-    border: "1px solid #c5e8d1",
+    background: "#CBEBDD",
+    color: "#126442",
+    border: "1px solid #9DD3B7",
     fontSize: "11px",
     fontWeight: "800",
     letterSpacing: "0.3px",
@@ -1076,9 +1079,9 @@ const styles = {
     gap: "6px",
     padding: "6px 11px",
     borderRadius: "20px",
-    background: "#fff0ee",
-    color: "#b34d42",
-    border: "1px solid #f2d0ca",
+    background: "#F7DCDC",
+    color: "#963D3D",
+    border: "1px solid #E5B6B6",
     fontSize: "11px",
     fontWeight: "800",
     letterSpacing: "0.3px",
@@ -1089,28 +1092,29 @@ const styles = {
   },
 
   notes: {
-    color: "#61766b",
+    color: "#557078",
     maxWidth: "280px",
     lineHeight: "1.5",
   },
 
 
-  // =========================
-  // EMPTY STATE
-  // =========================
+  // ==========================================
+  // EMPTY
+  // ==========================================
 
   empty: {
     textAlign: "center",
     padding: "65px 20px",
-    color: "#71877a",
+    color: "#557078",
   },
 
   emptyIcon: {
-    width: "70px",
-    height: "70px",
+    width: "72px",
+    height: "72px",
     margin: "0 auto 16px",
     borderRadius: "20px",
-    background: "#e1f3e7",
+    background: "#C9E4E5",
+    border: "1px solid #A8D2D4",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -1119,20 +1123,20 @@ const styles = {
 
   emptyTitle: {
     margin: "0 0 7px",
-    color: "#315441",
+    color: "#123B4A",
     fontSize: "18px",
   },
 
   emptyText: {
     margin: 0,
-    color: "#81938a",
+    color: "#60777E",
     fontSize: "14px",
   },
 
 
-  // =========================
+  // ==========================================
   // LOADING
-  // =========================
+  // ==========================================
 
   loadingState: {
     textAlign: "center",
@@ -1142,8 +1146,8 @@ const styles = {
   spinner: {
     width: "34px",
     height: "34px",
-    border: "4px solid #d8eee1",
-    borderTop: "4px solid #5bab79",
+    border: "4px solid #B8DCDD",
+    borderTop: "4px solid #087F8C",
     borderRadius: "50%",
     margin: "0 auto 18px",
     animation: "spin 1s linear infinite",
@@ -1151,10 +1155,9 @@ const styles = {
 
   loadingTitle: {
     margin: "0 0 5px",
-    color: "#315441",
+    color: "#123B4A",
     fontSize: "17px",
   },
 
 };
-
 export default AdminAppointments;
