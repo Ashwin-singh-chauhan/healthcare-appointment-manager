@@ -5,7 +5,6 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   "https://healthcare-appointment-manager-nlir.onrender.com";
 
-
 function DoctorAvailability() {
 
   const navigate = useNavigate();
