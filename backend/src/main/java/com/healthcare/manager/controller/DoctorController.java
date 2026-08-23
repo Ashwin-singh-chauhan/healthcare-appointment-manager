@@ -5,6 +5,8 @@ import com.healthcare.manager.repository.DoctorRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.security.core.Authentication;
+
 import java.util.List;
 
 @RestController
