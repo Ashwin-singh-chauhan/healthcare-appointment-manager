@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   getDoctors,
   getMyAppointments,
@@ -7,6 +8,7 @@ import {
 } from "../api";
 
 function Dashboard() {
+
   const navigate = useNavigate();
 
   const [doctors, setDoctors] = useState([]);
@@ -17,6 +19,7 @@ function Dashboard() {
 
   const [error, setError] = useState("");
   const [appointmentError, setAppointmentError] = useState("");
+
   const [search, setSearch] = useState("");
 
   const user = JSON.parse(
@@ -25,75 +28,134 @@ function Dashboard() {
 
   const token = localStorage.getItem("token");
 
+
+  /* =========================
+     LOAD DOCTORS
+  ========================= */
+
   useEffect(() => {
+
     if (!token) {
       navigate("/login");
       return;
     }
 
     async function loadDoctors() {
+
       try {
+
         const data = await getDoctors();
+
         setDoctors(data);
+
       } catch (err) {
+
         setError(err.message);
+
       } finally {
+
         setLoading(false);
+
       }
     }
 
     loadDoctors();
+
   }, [navigate, token]);
 
+
+  /* =========================
+     LOAD APPOINTMENTS
+  ========================= */
+
   useEffect(() => {
+
     if (!token) return;
 
     async function loadAppointments() {
+
       try {
+
         setAppointmentsLoading(true);
         setAppointmentError("");
 
-        const data = await getMyAppointments(token);
+        const data =
+          await getMyAppointments(token);
 
         setAppointments(data);
+
       } catch (err) {
+
         console.error(err);
         setAppointmentError(err.message);
+
       } finally {
+
         setAppointmentsLoading(false);
+
       }
     }
 
     loadAppointments();
+
   }, [token]);
 
+
+  /* =========================
+     CANCEL
+  ========================= */
+
   async function handleCancel(id) {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this appointment?"
-    );
+
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to cancel this appointment?"
+      );
 
     if (!confirmed) return;
 
     try {
-      await cancelAppointment(id, token);
 
-      const data = await getMyAppointments(token);
+      await cancelAppointment(
+        id,
+        token
+      );
+
+      const data =
+        await getMyAppointments(token);
+
       setAppointments(data);
+
     } catch (err) {
+
       console.error(err);
       setAppointmentError(err.message);
+
     }
   }
 
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
   function logout() {
+
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     navigate("/login");
   }
 
+
+  /* =========================
+     SEARCH
+  ========================= */
+
   const filteredDoctors = useMemo(() => {
-    const value = search.toLowerCase().trim();
+
+    const value =
+      search.toLowerCase().trim();
 
     if (!value) return doctors;
 
@@ -102,13 +164,19 @@ function Dashboard() {
         .toLowerCase()
         .includes(value)
     );
+
   }, [doctors, search]);
 
-  const bookedAppointments = appointments.filter(
-    (appointment) => appointment.status === "BOOKED"
-  );
+
+  const bookedAppointments =
+    appointments.filter(
+      (appointment) =>
+        appointment.status === "BOOKED"
+    );
+
 
   return (
+
     <div style={styles.page}>
 
       {/* =====================================================
@@ -118,38 +186,59 @@ function Dashboard() {
       <nav style={styles.nav}>
 
         <div style={styles.brandArea}>
+
           <div style={styles.logo}>
             +
           </div>
 
           <div>
+
             <div style={styles.brand}>
-              HealthCare<span style={styles.brandAccent}>+</span>
+              HealthCare
+              <span style={styles.brandAccent}>
+                +
+              </span>
             </div>
 
             <div style={styles.brandSub}>
-              Your health, our priority
+              YOUR HEALTH, OUR PRIORITY
             </div>
+
           </div>
+
         </div>
+
 
         <div style={styles.navRight}>
 
+          <div style={styles.secureBadge}>
+            <span style={styles.greenDot}></span>
+            Secure Portal
+          </div>
+
+
           <div style={styles.userInfo}>
+
             <div style={styles.userAvatar}>
-              {user?.name?.charAt(0)?.toUpperCase() || "P"}
+              {user?.name
+                ?.charAt(0)
+                ?.toUpperCase() || "P"}
             </div>
 
             <div>
+
               <div style={styles.userName}>
                 {user?.name || "Patient"}
               </div>
 
               <div style={styles.userRole}>
-                Patient
+                PATIENT
               </div>
+
             </div>
+
           </div>
+
 
           <button
             onClick={logout}
@@ -162,17 +251,22 @@ function Dashboard() {
 
       </nav>
 
+
       {/* =====================================================
           MAIN
       ===================================================== */}
 
       <main style={styles.container}>
 
-        {/* HERO */}
+
+        {/* =========================
+            HERO
+        ========================= */}
 
         <section style={styles.hero}>
 
-          <div>
+          <div style={styles.heroContent}>
+
             <div style={styles.eyebrow}>
               PATIENT PORTAL
             </div>
@@ -180,35 +274,81 @@ function Dashboard() {
             <h1 style={styles.heroTitle}>
               Good to see you,{" "}
               <span style={styles.heroName}>
-                {user?.name?.split(" ")[0] || "there"}
-              </span>{" "}
-              👋
+                {user?.name?.split(" ")[0] ||
+                  "there"}
+              </span>
             </h1>
 
             <p style={styles.heroSubtitle}>
-              Manage your appointments and find the right
-              healthcare professional for you.
+              Manage your appointments and find
+              the right healthcare professional for
+              your needs.
             </p>
+
+
+            <div style={styles.heroActions}>
+
+              <button
+                style={styles.heroButton}
+                onClick={() => {
+                  document
+                    .getElementById("doctors")
+                    ?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                }}
+              >
+                Find a Doctor
+                <span>→</span>
+              </button>
+
+              <button
+                style={styles.heroSecondary}
+                onClick={() => {
+                  document
+                    .getElementById("appointments")
+                    ?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                }}
+              >
+                My Appointments
+              </button>
+
+            </div>
+
           </div>
 
-          <div style={styles.heroIcon}>
-            🩺
+
+          <div style={styles.heroVisual}>
+
+            <div style={styles.heroCircleLarge}>
+              🩺
+            </div>
+
+            <div style={styles.heroCircleSmall}>
+              ✓
+            </div>
+
           </div>
 
         </section>
 
-        {/* =====================================================
+
+        {/* =========================
             STATS
-        ===================================================== */}
+        ========================= */}
 
         <section style={styles.statsGrid}>
 
           <div style={styles.statCard}>
-            <div style={styles.statIconBlue}>
+
+            <div style={styles.statIconTeal}>
               📅
             </div>
 
             <div>
+
               <div style={styles.statNumber}>
                 {bookedAppointments.length}
               </div>
@@ -216,15 +356,20 @@ function Dashboard() {
               <div style={styles.statLabel}>
                 Upcoming Appointments
               </div>
+
             </div>
+
           </div>
 
+
           <div style={styles.statCard}>
+
             <div style={styles.statIconGreen}>
               👨‍⚕️
             </div>
 
             <div>
+
               <div style={styles.statNumber}>
                 {doctors.length}
               </div>
@@ -232,15 +377,20 @@ function Dashboard() {
               <div style={styles.statLabel}>
                 Available Doctors
               </div>
+
             </div>
+
           </div>
 
+
           <div style={styles.statCard}>
-            <div style={styles.statIconPurple}>
+
+            <div style={styles.statIconNavy}>
               ✓
             </div>
 
             <div>
+
               <div style={styles.statNumber}>
                 {appointments.length}
               </div>
@@ -248,20 +398,27 @@ function Dashboard() {
               <div style={styles.statLabel}>
                 Total Appointments
               </div>
+
             </div>
+
           </div>
 
         </section>
+
 
         {/* =====================================================
             APPOINTMENTS
         ===================================================== */}
 
-        <section style={styles.section}>
+        <section
+          id="appointments"
+          style={styles.section}
+        >
 
           <div style={styles.sectionHeader}>
 
             <div>
+
               <div style={styles.sectionEyebrow}>
                 YOUR SCHEDULE
               </div>
@@ -271,9 +428,12 @@ function Dashboard() {
               </h2>
 
               <p style={styles.sectionSubtitle}>
-                View and manage your upcoming consultations.
+                View and manage your upcoming
+                consultations.
               </p>
+
             </div>
+
 
             <div style={styles.countBadge}>
               {bookedAppointments.length} active
@@ -281,21 +441,32 @@ function Dashboard() {
 
           </div>
 
+
           {appointmentsLoading && (
+
             <div style={styles.loadingCard}>
-              <div style={styles.spinner}>
+
+              <div style={styles.loadingIcon}>
                 ⟳
               </div>
 
-              <p>Loading your appointments...</p>
+              <p>
+                Loading your appointments...
+              </p>
+
             </div>
+
           )}
 
+
           {appointmentError && (
+
             <div style={styles.error}>
               ⚠️ {appointmentError}
             </div>
+
           )}
+
 
           {!appointmentsLoading &&
             !appointmentError &&
@@ -312,151 +483,267 @@ function Dashboard() {
                 </h3>
 
                 <p style={styles.emptyText}>
-                  Find a doctor below and book your
-                  first consultation.
+                  Find a doctor below and book
+                  your first consultation.
                 </p>
 
+                <button
+                  style={styles.emptyButton}
+                  onClick={() =>
+                    document
+                      .getElementById("doctors")
+                      ?.scrollIntoView({
+                        behavior: "smooth",
+                      })
+                  }
+                >
+                  Find a Doctor →
+                </button>
+
               </div>
+
             )}
+
 
           {!appointmentsLoading &&
             appointments.length > 0 && (
 
               <div style={styles.appointmentGrid}>
 
-                {appointments.map((appointment) => {
+                {appointments.map(
+                  (appointment) => {
 
-                  const isBooked =
-                    appointment.status === "BOOKED";
+                    const isBooked =
+                      appointment.status ===
+                      "BOOKED";
 
-                  return (
-                    <div
-                      key={appointment.id}
-                      style={{
-                        ...styles.appointmentCard,
-                        borderLeft: isBooked
-                          ? "4px solid #2563eb"
-                          : "4px solid #94a3b8",
-                      }}
-                    >
+                    return (
 
-                      <div style={styles.appointmentHeader}>
-
-                        <div style={styles.doctorMini}>
-
-                          <div style={styles.doctorMiniAvatar}>
-                            {appointment.doctorName
-                              ?.charAt(0)
-                              ?.toUpperCase() || "D"}
-                          </div>
-
-                          <div>
-
-                            <h3 style={styles.appointmentDoctor}>
-                              {appointment.doctorName}
-                            </h3>
-
-                            <span style={styles.doctorId}>
-                              Doctor ID #{appointment.doctorId}
-                            </span>
-
-                          </div>
-
-                        </div>
-
-                        <span
-                          style={
+                      <div
+                        key={appointment.id}
+                        style={{
+                          ...styles.appointmentCard,
+                          borderLeft:
                             isBooked
-                              ? styles.booked
-                              : styles.cancelled
+                              ? "4px solid #087F8C"
+                              : "4px solid #94A8AC",
+                        }}
+                      >
+
+                        <div
+                          style={
+                            styles.appointmentHeader
                           }
                         >
-                          {appointment.status}
-                        </span>
 
-                      </div>
+                          <div
+                            style={
+                              styles.doctorMini
+                            }
+                          >
 
-                      <div style={styles.appointmentInfo}>
+                            <div
+                              style={
+                                styles.doctorMiniAvatar
+                              }
+                            >
+                              {appointment
+                                .doctorName
+                                ?.charAt(0)
+                                ?.toUpperCase() ||
+                                "D"}
+                            </div>
 
-                        <div style={styles.infoItem}>
-                          <span style={styles.infoIcon}>
-                            📅
+                            <div>
+
+                              <h3
+                                style={
+                                  styles.appointmentDoctor
+                                }
+                              >
+                                {appointment.doctorName}
+                              </h3>
+
+                              <span
+                                style={
+                                  styles.doctorId
+                                }
+                              >
+                                Doctor ID #
+                                {appointment.doctorId}
+                              </span>
+
+                            </div>
+
+                          </div>
+
+
+                          <span
+                            style={
+                              isBooked
+                                ? styles.booked
+                                : styles.cancelled
+                            }
+                          >
+                            {appointment.status}
                           </span>
 
-                          <div>
-                            <span style={styles.infoLabel}>
-                              Date
-                            </span>
-
-                            <strong>
-                              {appointment.appointmentDate}
-                            </strong>
-                          </div>
                         </div>
 
-                        <div style={styles.infoItem}>
-                          <span style={styles.infoIcon}>
-                            🕐
-                          </span>
 
-                          <div>
-                            <span style={styles.infoLabel}>
-                              Time
-                            </span>
+                        <div
+                          style={
+                            styles.appointmentInfo
+                          }
+                        >
 
-                            <strong>
-                              {appointment.appointmentTime}
-                            </strong>
-                          </div>
-                        </div>
+                          <div
+                            style={
+                              styles.infoItem
+                            }
+                          >
 
-                      </div>
-
-                      {appointment.notes && (
-                        <div style={styles.notes}>
-                          <span>📝</span>
-
-                          <div>
-                            <span style={styles.infoLabel}>
-                              Notes
+                            <span
+                              style={
+                                styles.infoIcon
+                              }
+                            >
+                              📅
                             </span>
 
                             <div>
-                              {appointment.notes}
+
+                              <span
+                                style={
+                                  styles.infoLabel
+                                }
+                              >
+                                DATE
+                              </span>
+
+                              <strong>
+                                {
+                                  appointment
+                                    .appointmentDate
+                                }
+                              </strong>
+
                             </div>
+
                           </div>
+
+
+                          <div
+                            style={
+                              styles.infoItem
+                            }
+                          >
+
+                            <span
+                              style={
+                                styles.infoIcon
+                              }
+                            >
+                              🕐
+                            </span>
+
+                            <div>
+
+                              <span
+                                style={
+                                  styles.infoLabel
+                                }
+                              >
+                                TIME
+                              </span>
+
+                              <strong>
+                                {
+                                  appointment
+                                    .appointmentTime
+                                }
+                              </strong>
+
+                            </div>
+
+                          </div>
+
                         </div>
-                      )}
 
-                      {isBooked && (
-                        <button
-                          style={styles.cancelButton}
-                          onClick={() =>
-                            handleCancel(appointment.id)
-                          }
-                        >
-                          Cancel Appointment
-                        </button>
-                      )}
 
-                    </div>
-                  );
-                })}
+                        {appointment.notes && (
+
+                          <div style={styles.notes}>
+
+                            <span>
+                              📝
+                            </span>
+
+                            <div>
+
+                              <span
+                                style={
+                                  styles.infoLabel
+                                }
+                              >
+                                NOTES
+                              </span>
+
+                              <div>
+                                {appointment.notes}
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                        )}
+
+
+                        {isBooked && (
+
+                          <button
+                            style={
+                              styles.cancelButton
+                            }
+                            onClick={() =>
+                              handleCancel(
+                                appointment.id
+                              )
+                            }
+                          >
+                            Cancel Appointment
+                          </button>
+
+                        )}
+
+                      </div>
+
+                    );
+
+                  }
+                )}
 
               </div>
+
             )}
 
         </section>
+
 
         {/* =====================================================
             FIND DOCTOR
         ===================================================== */}
 
-        <section style={styles.section}>
+        <section
+          id="doctors"
+          style={styles.section}
+        >
 
           <div style={styles.sectionHeader}>
 
             <div>
+
               <div style={styles.sectionEyebrow}>
                 HEALTHCARE PROFESSIONALS
               </div>
@@ -466,12 +753,21 @@ function Dashboard() {
               </h2>
 
               <p style={styles.sectionSubtitle}>
-                Browse our healthcare professionals and
-                book an appointment.
+                Browse our healthcare professionals
+                and book your consultation.
               </p>
+
             </div>
 
+            {!loading &&
+              !error && (
+                <div style={styles.doctorCount}>
+                  {filteredDoctors.length} doctors
+                </div>
+              )}
+
           </div>
+
 
           {/* SEARCH */}
 
@@ -491,37 +787,51 @@ function Dashboard() {
             />
 
             {search && (
+
               <button
                 onClick={() => setSearch("")}
                 style={styles.clearSearch}
               >
                 ×
               </button>
+
             )}
 
           </div>
 
+
           {loading && (
+
             <div style={styles.loadingCard}>
-              <div style={styles.spinner}>
+
+              <div style={styles.loadingIcon}>
                 ⟳
               </div>
 
-              <p>Loading doctors...</p>
+              <p>
+                Loading doctors...
+              </p>
+
             </div>
+
           )}
 
+
           {error && (
+
             <div style={styles.error}>
               ⚠️ {error}
             </div>
+
           )}
+
 
           {!loading &&
             !error &&
             filteredDoctors.length === 0 && (
 
               <div style={styles.emptyCard}>
+
                 <div style={styles.emptyIcon}>
                   🔎
                 </div>
@@ -531,122 +841,200 @@ function Dashboard() {
                 </h3>
 
                 <p style={styles.emptyText}>
-                  Try a different name or specialization.
+                  Try a different name or
+                  specialization.
                 </p>
+
               </div>
+
             )}
+
 
           {!loading &&
             filteredDoctors.length > 0 && (
 
               <div style={styles.doctorGrid}>
 
-                {filteredDoctors.map((doctor) => (
+                {filteredDoctors.map(
+                  (doctor) => (
 
-                  <div
-                    key={doctor.id}
-                    style={styles.doctorCard}
-                  >
-
-                    <div style={styles.doctorCardTop}>
-
-                      <div style={styles.doctorAvatar}>
-                        {doctor.name
-                          ?.replace("Dr. ", "")
-                          ?.charAt(0)
-                          ?.toUpperCase() || "D"}
-                      </div>
-
-                      <span style={styles.availableBadge}>
-                        ● Available
-                      </span>
-
-                    </div>
-
-                    <h3 style={styles.doctorName}>
-                      {doctor.name}
-                    </h3>
-
-                    <div style={styles.specialization}>
-                      {doctor.specialization}
-                    </div>
-
-                    <div style={styles.doctorDetails}>
-
-                      <div>
-                        <span>✉️</span>
-                        {doctor.email}
-                      </div>
-
-                      <div>
-                        <span>📞</span>
-                        {doctor.phone}
-                      </div>
-
-                    </div>
-
-                    <button
-                      style={styles.bookButton}
-                      onClick={() =>
-                        navigate(`/book/${doctor.id}`)
-                      }
+                    <div
+                      key={doctor.id}
+                      style={styles.doctorCard}
                     >
-                      <span>
-                        View Availability
-                      </span>
 
-                      <span style={styles.arrow}>
-                        →
-                      </span>
-                    </button>
+                      <div
+                        style={
+                          styles.doctorCardTop
+                        }
+                      >
 
-                  </div>
+                        <div
+                          style={
+                            styles.doctorAvatar
+                          }
+                        >
+                          {doctor.name
+                            ?.replace(
+                              "Dr. ",
+                              ""
+                            )
+                            ?.charAt(0)
+                            ?.toUpperCase() ||
+                            "D"}
+                        </div>
 
-                ))}
+                        <span
+                          style={
+                            styles.availableBadge
+                          }
+                        >
+                          ● Available
+                        </span>
+
+                      </div>
+
+
+                      <h3
+                        style={
+                          styles.doctorName
+                        }
+                      >
+                        {doctor.name}
+                      </h3>
+
+
+                      <div
+                        style={
+                          styles.specialization
+                        }
+                      >
+                        {doctor.specialization}
+                      </div>
+
+
+                      <div
+                        style={
+                          styles.doctorDetails
+                        }
+                      >
+
+                        <div>
+                          <span>✉️</span>
+                          {doctor.email}
+                        </div>
+
+                        <div>
+                          <span>📞</span>
+                          {doctor.phone}
+                        </div>
+
+                      </div>
+
+
+                      <button
+                        style={
+                          styles.bookButton
+                        }
+                        onClick={() =>
+                          navigate(
+                            `/book/${doctor.id}`
+                          )
+                        }
+                      >
+
+                        <span>
+                          View Availability
+                        </span>
+
+                        <span
+                          style={
+                            styles.arrow
+                          }
+                        >
+                          →
+                        </span>
+
+                      </button>
+
+                    </div>
+
+                  )
+                )}
 
               </div>
+
             )}
 
         </section>
 
       </main>
 
-      {/* FOOTER */}
+
+      {/* =========================
+          FOOTER
+      ========================= */}
 
       <footer style={styles.footer}>
-        <div>
-          <strong>
-            HealthCare<span style={styles.brandAccent}>+</span>
-          </strong>
 
-          <span style={styles.footerText}>
-            &nbsp; • &nbsp; Your trusted healthcare companion
-          </span>
+        <div style={styles.footerBrand}>
+          <div style={styles.footerLogo}>
+            +
+          </div>
+
+          <div>
+
+            <strong>
+              HealthCare
+              <span style={styles.brandAccent}>
+                +
+              </span>
+            </strong>
+
+            <div style={styles.footerText}>
+              Your trusted healthcare companion
+            </div>
+
+          </div>
+
         </div>
+
+
+        <div style={styles.footerRight}>
+          🔒 Secure & Private
+        </div>
+
       </footer>
 
     </div>
   );
 }
 
+
+/* =====================================================
+   STYLES
+===================================================== */
+
 const styles = {
 
   page: {
     minHeight: "100vh",
-    background:
-      "linear-gradient(180deg, #f8fbff 0%, #f1f5f9 100%)",
+    background: "#DCEFF0",
     fontFamily:
-      "Inter, Arial, sans-serif",
-    color: "#0f172a",
+      "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif",
+    color: "#12313B",
   },
 
-  /* NAV */
+
+  /* =========================
+     NAVBAR
+  ========================= */
 
   nav: {
-    height: "76px",
-    padding: "0 7%",
-    background: "rgba(255,255,255,0.96)",
-    borderBottom: "1px solid #e2e8f0",
+    minHeight: "76px",
+    padding: "0 6%",
+    background: "#123B4A",
+    borderBottom: "1px solid #0E5363",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -654,7 +1042,7 @@ const styles = {
     top: 0,
     zIndex: 20,
     boxShadow:
-      "0 2px 12px rgba(15,23,42,0.04)",
+      "0 4px 18px rgba(18,59,74,0.18)",
   },
 
   brandArea: {
@@ -667,52 +1055,76 @@ const styles = {
     width: "42px",
     height: "42px",
     borderRadius: "12px",
-    background:
-      "linear-gradient(135deg,#2563eb,#1d4ed8)",
-    color: "white",
+    background: "#12A8A8",
+    color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "28px",
     fontWeight: "800",
     boxShadow:
-      "0 6px 15px rgba(37,99,235,0.25)",
+      "0 5px 15px rgba(18,168,168,0.35)",
   },
 
   brand: {
     fontSize: "21px",
     fontWeight: "800",
+    color: "#F4FFFF",
     letterSpacing: "-0.5px",
   },
 
   brandAccent: {
-    color: "#2563eb",
+    color: "#62D3D1",
   },
 
   brandSub: {
-    fontSize: "10px",
-    color: "#94a3b8",
-    marginTop: "1px",
+    fontSize: "8px",
+    color: "#8FD5D7",
+    marginTop: "2px",
+    letterSpacing: "1.3px",
+    fontWeight: "700",
   },
 
   navRight: {
     display: "flex",
     alignItems: "center",
-    gap: "20px",
+    gap: "18px",
+  },
+
+  secureBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: "7px",
+    background: "#1A4B5B",
+    border: "1px solid #387080",
+    color: "#BDEBED",
+    padding: "8px 11px",
+    borderRadius: "20px",
+    fontSize: "9px",
+    fontWeight: "800",
+  },
+
+  greenDot: {
+    width: "7px",
+    height: "7px",
+    borderRadius: "50%",
+    background: "#55D69A",
+    boxShadow:
+      "0 0 8px rgba(85,214,154,0.8)",
   },
 
   userInfo: {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "9px",
   },
 
   userAvatar: {
     width: "38px",
     height: "38px",
     borderRadius: "50%",
-    background: "#dbeafe",
-    color: "#2563eb",
+    background: "#C9E4E5",
+    color: "#087F8C",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -720,236 +1132,335 @@ const styles = {
   },
 
   userName: {
-    fontSize: "14px",
+    color: "#F4FFFF",
+    fontSize: "13px",
     fontWeight: "700",
   },
 
   userRole: {
-    fontSize: "11px",
-    color: "#64748b",
+    color: "#8FD5D7",
+    fontSize: "8px",
     marginTop: "2px",
+    fontWeight: "800",
+    letterSpacing: "1px",
   },
 
   logout: {
-    border: "1px solid #fecaca",
-    background: "#fff1f2",
-    color: "#dc2626",
-    padding: "9px 17px",
+    border: "1px solid #A85B64",
+    background: "#5A3540",
+    color: "#FFDDE0",
+    padding: "9px 15px",
     borderRadius: "9px",
     cursor: "pointer",
     fontWeight: "700",
+    fontSize: "11px",
   },
 
-  /* MAIN */
+
+  /* =========================
+     MAIN
+  ========================= */
 
   container: {
     width: "min(1180px, 92%)",
     margin: "0 auto",
-    padding: "42px 0 70px",
+    padding: "42px 0 65px",
   },
+
+
+  /* =========================
+     HERO
+  ========================= */
 
   hero: {
     background:
-      "linear-gradient(135deg,#1d4ed8,#2563eb 55%,#3b82f6)",
+      "linear-gradient(135deg,#123B4A,#087F8C 58%,#12A8A8)",
     borderRadius: "22px",
     padding: "38px 42px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    color: "white",
+    color: "#FFFFFF",
     boxShadow:
-      "0 20px 45px rgba(37,99,235,0.22)",
+      "0 20px 45px rgba(8,127,140,0.25)",
     overflow: "hidden",
     position: "relative",
-    marginBottom: "25px",
+    marginBottom: "22px",
+  },
+
+  heroContent: {
+    position: "relative",
+    zIndex: 2,
   },
 
   eyebrow: {
-    fontSize: "11px",
-    letterSpacing: "1.5px",
+    fontSize: "10px",
+    letterSpacing: "1.8px",
     fontWeight: "800",
-    opacity: 0.75,
-    marginBottom: "10px",
+    color: "#9DE2E1",
+    marginBottom: "9px",
   },
 
   heroTitle: {
     fontSize: "34px",
     margin: 0,
-    color: "white",
+    color: "#FFFFFF",
     letterSpacing: "-1px",
+    fontWeight: "750",
   },
 
   heroName: {
-    color: "#bfdbfe",
+    color: "#72E0DD",
   },
 
   heroSubtitle: {
-    color: "#dbeafe",
+    color: "#D4F4F4",
     maxWidth: "650px",
     margin: "12px 0 0",
-    fontSize: "15px",
+    fontSize: "14px",
+    lineHeight: "1.6",
   },
 
-  heroIcon: {
-    width: "100px",
-    height: "100px",
-    borderRadius: "50%",
-    background: "rgba(255,255,255,0.12)",
+  heroActions: {
+    display: "flex",
+    gap: "10px",
+    marginTop: "22px",
+  },
+
+  heroButton: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    fontSize: "48px",
+    gap: "14px",
+    padding: "11px 16px",
+    border: "none",
+    borderRadius: "9px",
+    background: "#FFFFFF",
+    color: "#087F8C",
+    cursor: "pointer",
+    fontSize: "12px",
+    fontWeight: "800",
+  },
+
+  heroSecondary: {
+    padding: "11px 16px",
+    border: "1px solid #5BA6AD",
+    borderRadius: "9px",
+    background: "#1A5360",
+    color: "#E5FFFF",
+    cursor: "pointer",
+    fontSize: "12px",
+    fontWeight: "700",
+  },
+
+  heroVisual: {
+    width: "135px",
+    height: "135px",
+    position: "relative",
     flexShrink: 0,
   },
 
-  /* STATS */
+  heroCircleLarge: {
+    width: "115px",
+    height: "115px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.13)",
+    border: "1px solid rgba(255,255,255,0.2)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "52px",
+  },
+
+  heroCircleSmall: {
+    position: "absolute",
+    right: 0,
+    bottom: 5,
+    width: "38px",
+    height: "38px",
+    borderRadius: "50%",
+    background: "#55D69A",
+    color: "#FFFFFF",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "900",
+    border: "4px solid #087F8C",
+  },
+
+
+  /* =========================
+     STATS
+  ========================= */
 
   statsGrid: {
     display: "grid",
     gridTemplateColumns:
       "repeat(3, 1fr)",
-    gap: "18px",
-    marginBottom: "55px",
+    gap: "16px",
+    marginBottom: "52px",
   },
 
   statCard: {
-    background: "white",
-    border: "1px solid #e2e8f0",
-    borderRadius: "16px",
-    padding: "21px",
+    background: "#EAF7F6",
+    border: "1px solid #A8D2D4",
+    borderRadius: "15px",
+    padding: "20px",
     display: "flex",
     alignItems: "center",
-    gap: "15px",
+    gap: "14px",
     boxShadow:
-      "0 7px 22px rgba(15,23,42,0.05)",
+      "0 7px 22px rgba(18,59,74,0.07)",
   },
 
-  statIconBlue: {
+  statIconTeal: {
     width: "48px",
     height: "48px",
     borderRadius: "12px",
-    background: "#eff6ff",
+    background: "#C9E4E5",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "22px",
+    fontSize: "21px",
   },
 
   statIconGreen: {
     width: "48px",
     height: "48px",
     borderRadius: "12px",
-    background: "#f0fdf4",
+    background: "#CBEBDD",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "22px",
+    fontSize: "21px",
   },
 
-  statIconPurple: {
+  statIconNavy: {
     width: "48px",
     height: "48px",
     borderRadius: "12px",
-    background: "#faf5ff",
+    background: "#D0E1E5",
+    color: "#123B4A",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "22px",
+    fontSize: "21px",
+    fontWeight: "900",
   },
 
   statNumber: {
+    color: "#123B4A",
     fontSize: "25px",
     fontWeight: "800",
     lineHeight: 1,
   },
 
   statLabel: {
-    color: "#64748b",
-    fontSize: "12px",
+    color: "#60777E",
+    fontSize: "11px",
     marginTop: "6px",
+    fontWeight: "600",
   },
 
-  /* SECTIONS */
+
+  /* =========================
+     SECTIONS
+  ========================= */
 
   section: {
-    marginBottom: "58px",
+    marginBottom: "55px",
   },
 
   sectionHeader: {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    marginBottom: "22px",
+    marginBottom: "20px",
   },
 
   sectionEyebrow: {
-    color: "#2563eb",
-    fontSize: "10px",
+    color: "#087F8C",
+    fontSize: "9px",
     fontWeight: "800",
-    letterSpacing: "1.5px",
+    letterSpacing: "1.6px",
     marginBottom: "6px",
   },
 
   sectionTitle: {
+    color: "#123B4A",
     fontSize: "27px",
     margin: 0,
-    letterSpacing: "-0.7px",
+    letterSpacing: "-0.6px",
+    fontWeight: "750",
   },
 
   sectionSubtitle: {
     margin: "6px 0 0",
-    color: "#64748b",
-    fontSize: "14px",
+    color: "#60777E",
+    fontSize: "13px",
   },
 
   countBadge: {
-    background: "#eff6ff",
-    color: "#2563eb",
+    background: "#CBEBDD",
+    color: "#126442",
+    border: "1px solid #9DD3B7",
     padding: "7px 12px",
     borderRadius: "999px",
-    fontSize: "12px",
+    fontSize: "10px",
     fontWeight: "800",
   },
 
-  /* APPOINTMENTS */
+  doctorCount: {
+    background: "#C9E4E5",
+    color: "#087F8C",
+    border: "1px solid #A8D2D4",
+    padding: "7px 12px",
+    borderRadius: "999px",
+    fontSize: "10px",
+    fontWeight: "800",
+  },
+
+
+  /* =========================
+     APPOINTMENTS
+  ========================= */
 
   appointmentGrid: {
     display: "grid",
     gridTemplateColumns:
-      "repeat(auto-fit,minmax(370px,1fr))",
-    gap: "18px",
+      "repeat(auto-fit,minmax(350px,1fr))",
+    gap: "16px",
   },
 
   appointmentCard: {
-    background: "white",
-    padding: "22px",
-    borderRadius: "16px",
-    borderTop: "1px solid #e2e8f0",
-    borderRight: "1px solid #e2e8f0",
-    borderBottom: "1px solid #e2e8f0",
+    background: "#EAF7F6",
+    padding: "21px",
+    borderRadius: "15px",
+    borderTop: "1px solid #A8D2D4",
+    borderRight: "1px solid #A8D2D4",
+    borderBottom: "1px solid #A8D2D4",
     boxShadow:
-      "0 8px 25px rgba(15,23,42,0.06)",
+      "0 7px 22px rgba(18,59,74,0.07)",
   },
 
   appointmentHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: "15px",
+    gap: "12px",
   },
 
   doctorMini: {
     display: "flex",
     alignItems: "center",
-    gap: "12px",
+    gap: "11px",
   },
 
   doctorMiniAvatar: {
-    width: "46px",
-    height: "46px",
-    borderRadius: "13px",
-    background: "#dbeafe",
-    color: "#2563eb",
+    width: "45px",
+    height: "45px",
+    borderRadius: "12px",
+    background: "#C9E4E5",
+    color: "#087F8C",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -959,146 +1470,156 @@ const styles = {
 
   appointmentDoctor: {
     margin: 0,
-    fontSize: "16px",
+    color: "#123B4A",
+    fontSize: "15px",
+    fontWeight: "750",
   },
 
   doctorId: {
-    color: "#94a3b8",
-    fontSize: "11px",
+    color: "#71888E",
+    fontSize: "9px",
   },
 
   booked: {
-    background: "#dcfce7",
-    color: "#15803d",
-    padding: "6px 10px",
+    background: "#CBEBDD",
+    color: "#126442",
+    border: "1px solid #9DD3B7",
+    padding: "6px 9px",
     borderRadius: "999px",
-    fontSize: "10px",
+    fontSize: "8px",
     fontWeight: "800",
   },
 
   cancelled: {
-    background: "#fee2e2",
-    color: "#b91c1c",
-    padding: "6px 10px",
+    background: "#F7DCDC",
+    color: "#8E3838",
+    border: "1px solid #E6B5B5",
+    padding: "6px 9px",
     borderRadius: "999px",
-    fontSize: "10px",
+    fontSize: "8px",
     fontWeight: "800",
   },
 
   appointmentInfo: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
-    gap: "12px",
-    marginTop: "22px",
-    paddingTop: "18px",
-    borderTop: "1px solid #f1f5f9",
+    gap: "10px",
+    marginTop: "20px",
+    paddingTop: "17px",
+    borderTop: "1px solid #C7DDDE",
   },
 
   infoItem: {
     display: "flex",
-    gap: "9px",
+    gap: "8px",
     alignItems: "center",
   },
 
   infoIcon: {
-    fontSize: "17px",
+    fontSize: "15px",
   },
 
   infoLabel: {
     display: "block",
-    color: "#94a3b8",
-    fontSize: "10px",
-    fontWeight: "700",
-    textTransform: "uppercase",
+    color: "#789096",
+    fontSize: "8px",
+    fontWeight: "800",
+    letterSpacing: "0.5px",
     marginBottom: "3px",
   },
 
   notes: {
     display: "flex",
     gap: "9px",
-    marginTop: "16px",
-    padding: "12px",
-    background: "#f8fafc",
-    borderRadius: "10px",
-    color: "#475569",
-    fontSize: "13px",
+    marginTop: "14px",
+    padding: "11px",
+    background: "#D8EBEC",
+    borderRadius: "9px",
+    color: "#45616A",
+    fontSize: "12px",
   },
 
   cancelButton: {
     width: "100%",
-    marginTop: "17px",
-    padding: "11px",
-    border: "1px solid #fecaca",
+    marginTop: "15px",
+    padding: "10px",
+    border: "1px solid #D8A6AC",
     borderRadius: "9px",
-    background: "#fff1f2",
-    color: "#dc2626",
+    background: "#F7DCDC",
+    color: "#9A3C48",
     cursor: "pointer",
-    fontSize: "13px",
-    fontWeight: "700",
+    fontSize: "11px",
+    fontWeight: "750",
   },
 
-  /* SEARCH */
+
+  /* =========================
+     SEARCH
+  ========================= */
 
   searchWrapper: {
     position: "relative",
-    marginBottom: "22px",
+    marginBottom: "20px",
   },
 
   searchIcon: {
     position: "absolute",
-    left: "16px",
+    left: "15px",
     top: "50%",
     transform: "translateY(-50%)",
-    fontSize: "17px",
+    fontSize: "16px",
     zIndex: 1,
   },
 
   searchInput: {
     width: "100%",
-    padding: "15px 45px",
-    border: "1px solid #cbd5e1",
-    borderRadius: "12px",
-    fontSize: "14px",
+    boxSizing: "border-box",
+    padding: "14px 43px",
+    border: "1px solid #8DBFC2",
+    borderRadius: "11px",
+    fontSize: "13px",
     outline: "none",
-    background: "white",
+    background: "#EAF7F6",
+    color: "#123B4A",
     boxShadow:
-      "0 5px 15px rgba(15,23,42,0.04)",
+      "0 5px 15px rgba(18,59,74,0.05)",
   },
 
   clearSearch: {
     position: "absolute",
-    right: "12px",
+    right: "11px",
     top: "50%",
     transform: "translateY(-50%)",
-    width: "27px",
-    height: "27px",
+    width: "26px",
+    height: "26px",
     borderRadius: "50%",
     border: "none",
-    background: "#e2e8f0",
-    color: "#475569",
+    background: "#C5DDDE",
+    color: "#45616A",
     cursor: "pointer",
-    fontSize: "18px",
+    fontSize: "17px",
     lineHeight: "1",
   },
 
-  /* DOCTORS */
+
+  /* =========================
+     DOCTORS
+  ========================= */
 
   doctorGrid: {
     display: "grid",
     gridTemplateColumns:
-      "repeat(auto-fit,minmax(280px,1fr))",
-    gap: "18px",
+      "repeat(auto-fit,minmax(275px,1fr))",
+    gap: "16px",
   },
 
   doctorCard: {
-    background: "white",
-    border: "1px solid #e2e8f0",
-    borderRadius: "17px",
-    padding: "23px",
+    background: "#EAF7F6",
+    border: "1px solid #A8D2D4",
+    borderRadius: "16px",
+    padding: "22px",
     boxShadow:
-      "0 7px 22px rgba(15,23,42,0.05)",
-    transition:
-      "transform 0.2s ease, box-shadow 0.2s ease",
+      "0 7px 22px rgba(18,59,74,0.06)",
   },
 
   doctorCardTop: {
@@ -1108,107 +1629,114 @@ const styles = {
   },
 
   doctorAvatar: {
-    width: "58px",
-    height: "58px",
-    borderRadius: "16px",
+    width: "57px",
+    height: "57px",
+    borderRadius: "15px",
     background:
-      "linear-gradient(135deg,#dbeafe,#bfdbfe)",
-    color: "#1d4ed8",
+      "linear-gradient(135deg,#C9E4E5,#A9D9DB)",
+    color: "#087F8C",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "24px",
+    fontSize: "23px",
     fontWeight: "800",
   },
 
   availableBadge: {
-    color: "#15803d",
-    background: "#f0fdf4",
+    color: "#126442",
+    background: "#CBEBDD",
+    border: "1px solid #9DD3B7",
     padding: "6px 9px",
     borderRadius: "999px",
-    fontSize: "10px",
+    fontSize: "9px",
     fontWeight: "800",
   },
 
   doctorName: {
-    fontSize: "18px",
-    margin: "17px 0 5px",
+    color: "#123B4A",
+    fontSize: "17px",
+    margin: "16px 0 5px",
+    fontWeight: "750",
   },
 
   specialization: {
-    color: "#2563eb",
+    color: "#087F8C",
     fontWeight: "800",
-    fontSize: "13px",
+    fontSize: "12px",
   },
 
   doctorDetails: {
-    marginTop: "17px",
-    paddingTop: "15px",
-    borderTop: "1px solid #f1f5f9",
+    marginTop: "16px",
+    paddingTop: "14px",
+    borderTop: "1px solid #C7DDDE",
     display: "flex",
     flexDirection: "column",
-    gap: "8px",
-    color: "#64748b",
-    fontSize: "12px",
+    gap: "7px",
+    color: "#60777E",
+    fontSize: "11px",
   },
 
   bookButton: {
     width: "100%",
-    marginTop: "18px",
-    padding: "12px",
+    marginTop: "17px",
+    padding: "11px",
     border: "none",
-    borderRadius: "10px",
+    borderRadius: "9px",
     background:
-      "linear-gradient(135deg,#2563eb,#1d4ed8)",
-    color: "white",
+      "linear-gradient(135deg,#087F8C,#12A8A8)",
+    color: "#FFFFFF",
     cursor: "pointer",
-    fontSize: "13px",
+    fontSize: "12px",
     fontWeight: "800",
     display: "flex",
     justifyContent: "space-between",
-    paddingLeft: "16px",
-    paddingRight: "16px",
+    paddingLeft: "15px",
+    paddingRight: "15px",
   },
 
   arrow: {
-    fontSize: "18px",
+    fontSize: "17px",
   },
 
-  /* STATES */
+
+  /* =========================
+     STATES
+  ========================= */
 
   loadingCard: {
-    background: "white",
-    border: "1px solid #e2e8f0",
-    borderRadius: "15px",
+    background: "#EAF7F6",
+    border: "1px solid #A8D2D4",
+    borderRadius: "14px",
     padding: "30px",
     textAlign: "center",
-    color: "#64748b",
+    color: "#60777E",
   },
 
-  spinner: {
+  loadingIcon: {
     fontSize: "25px",
-    color: "#2563eb",
+    color: "#087F8C",
+    marginBottom: "7px",
   },
 
   error: {
-    background: "#fff1f2",
-    color: "#b91c1c",
-    border: "1px solid #fecaca",
+    background: "#F7DCDC",
+    color: "#8E3838",
+    border: "1px solid #E6B5B5",
     padding: "13px 15px",
     borderRadius: "10px",
-    marginBottom: "20px",
-    fontSize: "13px",
-    fontWeight: "600",
+    marginBottom: "18px",
+    fontSize: "12px",
+    fontWeight: "650",
   },
 
   emptyCard: {
-    background: "white",
-    border: "1px solid #e2e8f0",
-    borderRadius: "16px",
+    background: "#EAF7F6",
+    border: "1px solid #A8D2D4",
+    borderRadius: "15px",
     padding: "42px 25px",
     textAlign: "center",
     boxShadow:
-      "0 7px 22px rgba(15,23,42,0.04)",
+      "0 7px 22px rgba(18,59,74,0.05)",
   },
 
   emptyIcon: {
@@ -1216,36 +1744,84 @@ const styles = {
     height: "55px",
     margin: "0 auto 12px",
     borderRadius: "15px",
-    background: "#eff6ff",
+    background: "#C9E4E5",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "24px",
+    fontSize: "23px",
   },
 
   emptyTitle: {
     margin: "0 0 5px",
+    color: "#123B4A",
     fontSize: "17px",
   },
 
   emptyText: {
     margin: 0,
-    fontSize: "13px",
+    color: "#60777E",
+    fontSize: "12px",
   },
 
-  /* FOOTER */
+  emptyButton: {
+    marginTop: "15px",
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: "9px",
+    background: "#087F8C",
+    color: "#FFFFFF",
+    cursor: "pointer",
+    fontSize: "11px",
+    fontWeight: "800",
+  },
+
+
+  /* =========================
+     FOOTER
+  ========================= */
 
   footer: {
-    borderTop: "1px solid #e2e8f0",
-    background: "white",
-    padding: "25px 7%",
-    color: "#475569",
-    fontSize: "13px",
+    borderTop: "1px solid #A8D2D4",
+    background: "#123B4A",
+    padding: "22px 6%",
+    color: "#D4F4F4",
+    fontSize: "11px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  footerBrand: {
+    display: "flex",
+    alignItems: "center",
+    gap: "9px",
+  },
+
+  footerLogo: {
+    width: "28px",
+    height: "28px",
+    borderRadius: "8px",
+    background: "#12A8A8",
+    color: "#FFFFFF",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "900",
+    fontSize: "17px",
   },
 
   footerText: {
-    color: "#94a3b8",
+    color: "#8FBBC0",
+    fontSize: "9px",
+    marginTop: "2px",
   },
+
+  footerRight: {
+    color: "#8FBBC0",
+    fontSize: "9px",
+    fontWeight: "700",
+  },
+
 };
 
 export default Dashboard;
