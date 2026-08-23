@@ -137,7 +137,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: "#f8fafc",
+    background: "#F5FAF7",
     fontFamily: "Arial, sans-serif",
   },
 
@@ -169,7 +169,7 @@ const styles = {
     padding: "13px",
     border: "none",
     borderRadius: "7px",
-    background: "#2563eb",
+    background: "#4C9B6E",
     color: "white",
     fontSize: "16px",
     cursor: "pointer",
