@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const API_URL =
-  import.meta.env.VITE_API_URL || "https://healthcare-appointment-manager-nlir.onrender.com";
+  import.meta.env.VITE_API_URL ||
+  "https://healthcare-appointment-manager-nlir.onrender.com";
 
 function DoctorAvailability() {
 
@@ -11,6 +12,8 @@ function DoctorAvailability() {
   const user = JSON.parse(
     localStorage.getItem("user") || "null"
   );
+
+  const [doctorId, setDoctorId] = useState(null);
 
   const [date, setDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -22,6 +25,79 @@ function DoctorAvailability() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingDoctor, setLoadingDoctor] = useState(true);
+
+
+  // ==========================================
+  // LOAD LOGGED-IN DOCTOR
+  // ==========================================
+
+  useEffect(() => {
+
+    async function loadDoctor() {
+
+      const token = localStorage.getItem("token");
+
+      if (!token || !user) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+
+        setLoadingDoctor(true);
+        setError("");
+
+        const response = await fetch(
+          `${API_URL}/api/doctors/me`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data?.message ||
+            `Failed to load doctor: ${response.status}`
+          );
+        }
+
+        console.log("Logged-in doctor:", data);
+
+        setDoctorId(data.id);
+
+      } catch (err) {
+
+        console.error(
+          "Failed to load doctor:",
+          err
+        );
+
+        setError(
+          "Could not load doctor information. " +
+          "Please make sure your doctor account exists."
+        );
+
+      } finally {
+
+        setLoadingDoctor(false);
+
+      }
+    }
+
+    loadDoctor();
+
+  }, [navigate]);
+
+
+  // ==========================================
+  // SAVE AVAILABILITY
+  // ==========================================
 
   async function saveAvailability(e) {
 
@@ -31,27 +107,54 @@ function DoctorAvailability() {
     setError("");
 
     if (!user) {
-        setError("Doctor information not found. Please login again.");
-        return;
+
+      setError(
+        "Doctor information not found. Please login again."
+      );
+
+      return;
+    }
+
+    if (!doctorId) {
+
+      setError(
+        "Doctor ID not found. Please login again."
+      );
+
+      return;
     }
 
     if (startTime >= endTime) {
-        setError("End time must be after start time.");
-        return;
+
+      setError(
+        "End time must be after start time."
+      );
+
+      return;
     }
 
     const token = localStorage.getItem("token");
+
+    if (!token) {
+
+      navigate("/login");
+
+      return;
+    }
 
     setLoading(true);
 
     try {
 
-        // Convert selected date into day of week
-        const selectedDate = new Date(
-        date + "T00:00:00"
-        );
+      // ==========================================
+      // CONVERT DATE → DAY OF WEEK
+      // ==========================================
 
-        const days = [
+      const selectedDate = new Date(
+        date + "T00:00:00"
+      );
+
+      const days = [
         "SUNDAY",
         "MONDAY",
         "TUESDAY",
@@ -59,63 +162,90 @@ function DoctorAvailability() {
         "THURSDAY",
         "FRIDAY",
         "SATURDAY"
-        ];
+      ];
 
-        const dayOfWeek =
+      const dayOfWeek =
         days[selectedDate.getDay()];
 
-        /*
-        * IMPORTANT:
-        * Rahul Sharma is doctor ID 1 in the doctors table.
-        *
-        * userId from login is 4, which is the users table ID.
-        */
 
-        const response = await fetch(
+      // ==========================================
+      // SEND AVAILABILITY
+      // ==========================================
+
+      const response = await fetch(
         `${API_URL}/api/availability/my`,
         {
-            method: "POST",
+          method: "POST",
 
-            headers: {
+          headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            },
+          },
 
-            body: JSON.stringify({
+          body: JSON.stringify({
+
             doctorId: doctorId,
+
             dayOfWeek: dayOfWeek,
+
             startTime: startTime,
+
             endTime: endTime,
+
             slotDurationMinutes: 30
-            }),
+
+          }),
         }
-        );
+      );
 
-        const data = await response.json();
 
-        if (!response.ok) {
+      const data = await response.json();
+
+
+      if (!response.ok) {
+
         throw new Error(
-            data?.message ||
-            `Request failed: ${response.status}`
+          data?.message ||
+          `Request failed: ${response.status}`
         );
-        }
 
-        setMessage(
+      }
+
+
+      console.log(
+        "Availability response:",
+        data
+      );
+
+
+      setMessage(
         "Availability saved successfully."
-        );
+      );
+
 
     } catch (err) {
 
-        console.error(err);
+      console.error(
+        "Save availability failed:",
+        err
+      );
 
-        setError(err.message);
+      setError(
+        err.message ||
+        "Failed to save availability."
+      );
 
     } finally {
 
-        setLoading(false);
+      setLoading(false);
 
     }
-    }
+  }
+
+
+  // ==========================================
+  // LOGOUT
+  // ==========================================
 
   function logout() {
 
@@ -123,14 +253,57 @@ function DoctorAvailability() {
     localStorage.removeItem("user");
 
     navigate("/login");
+
   }
 
+
+  // ==========================================
+  // LOADING DOCTOR
+  // ==========================================
+
+  if (loadingDoctor) {
+
+    return (
+      <div style={styles.page}>
+
+        <header style={styles.header}>
+
+          <h2>
+            HealthCare+ Doctor
+          </h2>
+
+        </header>
+
+        <main style={styles.main}>
+
+          <h1 style={styles.title}>
+            Manage Availability
+          </h1>
+
+          <p style={styles.subtitle}>
+            Loading doctor information...
+          </p>
+
+        </main>
+
+      </div>
+    );
+  }
+
+
+  // ==========================================
+  // UI
+  // ==========================================
+
   return (
+
     <div style={styles.page}>
 
       <header style={styles.header}>
 
-        <h2>HealthCare+ Doctor</h2>
+        <h2>
+          HealthCare+ Doctor
+        </h2>
 
         <div style={styles.headerRight}>
 
@@ -149,41 +322,61 @@ function DoctorAvailability() {
 
       </header>
 
+
       <main style={styles.main}>
 
         <button
-          onClick={() => navigate("/doctor")}
+          onClick={() =>
+            navigate("/doctor")
+          }
           style={styles.backButton}
         >
           ← Back to Doctor Dashboard
         </button>
 
+
         <h1 style={styles.title}>
           Manage Availability
         </h1>
 
+
         <p style={styles.subtitle}>
-          Set your working hours and available appointment slots.
+          Set your working hours and available
+          appointment slots.
         </p>
 
+
         {message && (
+
           <div style={styles.success}>
+
             {message}
+
           </div>
+
         )}
 
+
         {error && (
+
           <div style={styles.error}>
+
             {error}
+
           </div>
+
         )}
+
 
         <form
           onSubmit={saveAvailability}
           style={styles.card}
         >
 
-          <h2>Set Working Hours</h2>
+          <h2>
+            Set Working Hours
+          </h2>
+
 
           <label style={styles.label}>
             Select Date
@@ -199,6 +392,7 @@ function DoctorAvailability() {
             required
           />
 
+
           <label style={styles.label}>
             Start Time
           </label>
@@ -212,6 +406,7 @@ function DoctorAvailability() {
             style={styles.input}
             required
           />
+
 
           <label style={styles.label}>
             End Time
@@ -227,14 +422,20 @@ function DoctorAvailability() {
             required
           />
 
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={
+              loading ||
+              !doctorId
+            }
             style={styles.saveButton}
           >
+
             {loading
               ? "Saving..."
               : "Save Availability"}
+
           </button>
 
         </form>
@@ -242,8 +443,14 @@ function DoctorAvailability() {
       </main>
 
     </div>
+
   );
 }
+
+
+// ==========================================
+// STYLES
+// ==========================================
 
 const styles = {
 
@@ -351,12 +558,13 @@ const styles = {
 
   error: {
     background: "#fee2e2",
-    color: "#991b1b",
+    color: "#991b1c",
     padding: "15px",
     borderRadius: "8px",
     marginBottom: "20px",
     maxWidth: "600px",
   },
+
 };
 
 export default DoctorAvailability;
