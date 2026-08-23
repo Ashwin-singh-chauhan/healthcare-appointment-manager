@@ -1,5 +1,5 @@
 const API_URL =
-  import.meta.env.VITE_API_URL || "https://healthcare-appointment-manager-nl1r.onrender.com";
+  import.meta.env.VITE_API_URL || "https://healthcare-appointment-manager-nlir.onrender.com";
 
 async function request(endpoint, options = {}) {
   const response = await fetch(`${API_URL}${endpoint}`, {
