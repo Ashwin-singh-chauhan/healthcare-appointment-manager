@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:8080";
+const API_URL = "https://healthcare-appointment-manager-nlir.onrender.com";
 
 function AdminDoctors() {
   const navigate = useNavigate();
