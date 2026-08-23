@@ -28,9 +28,9 @@ function DoctorAvailability() {
   const [loadingDoctor, setLoadingDoctor] = useState(true);
 
 
-  /* =========================
+  /* =====================================================
      LOAD LOGGED-IN DOCTOR
-  ========================= */
+  ===================================================== */
 
   useEffect(() => {
 
@@ -102,9 +102,9 @@ function DoctorAvailability() {
   }, [navigate]);
 
 
-  /* =========================
+  /* =====================================================
      SAVE AVAILABILITY
-  ========================= */
+  ===================================================== */
 
   async function saveAvailability(e) {
 
@@ -157,9 +157,9 @@ function DoctorAvailability() {
 
     try {
 
-      /* =========================
+      /* =================================================
          DATE → DAY OF WEEK
-      ========================= */
+      ================================================= */
 
       const selectedDate =
         new Date(date + "T00:00:00");
@@ -178,9 +178,9 @@ function DoctorAvailability() {
         days[selectedDate.getDay()];
 
 
-      /* =========================
+      /* =================================================
          SEND AVAILABILITY
-      ========================= */
+      ================================================= */
 
       const response = await fetch(
         `${API_URL}/api/availability/my`,
@@ -193,17 +193,11 @@ function DoctorAvailability() {
           },
 
           body: JSON.stringify({
-
             doctorId: doctorId,
-
             dayOfWeek: dayOfWeek,
-
             startTime: startTime,
-
             endTime: endTime,
-
             slotDurationMinutes: 30,
-
           }),
         }
       );
@@ -250,9 +244,9 @@ function DoctorAvailability() {
   }
 
 
-  /* =========================
+  /* =====================================================
      LOGOUT
-  ========================= */
+  ===================================================== */
 
   function logout() {
 
@@ -264,9 +258,9 @@ function DoctorAvailability() {
   }
 
 
-  /* =========================
-     LOADING
-  ========================= */
+  /* =====================================================
+     LOADING SCREEN
+  ===================================================== */
 
   if (loadingDoctor) {
 
@@ -329,18 +323,18 @@ function DoctorAvailability() {
   }
 
 
-  /* =========================
-     UI
-  ========================= */
+  /* =====================================================
+     MAIN UI
+  ===================================================== */
 
   return (
 
     <div style={styles.page}>
 
 
-      {/* =====================================================
+      {/* =================================================
           HEADER
-      ===================================================== */}
+      ================================================= */}
 
       <header style={styles.header}>
 
@@ -414,9 +408,9 @@ function DoctorAvailability() {
       </header>
 
 
-      {/* =====================================================
+      {/* =================================================
           MAIN
-      ===================================================== */}
+      ================================================= */}
 
       <main style={styles.main}>
 
@@ -476,9 +470,9 @@ function DoctorAvailability() {
         </section>
 
 
-        {/* =====================================================
-            SUCCESS
-        ===================================================== */}
+        {/* =================================================
+            SUCCESS MESSAGE
+        ================================================= */}
 
         {message && (
 
@@ -505,9 +499,9 @@ function DoctorAvailability() {
         )}
 
 
-        {/* =====================================================
-            ERROR
-        ===================================================== */}
+        {/* =================================================
+            ERROR MESSAGE
+        ================================================= */}
 
         {error && (
 
@@ -534,14 +528,16 @@ function DoctorAvailability() {
         )}
 
 
-        {/* =====================================================
-            FORM
-        ===================================================== */}
+        {/* =================================================
+            CONTENT
+        ================================================= */}
 
         <section style={styles.layout}>
 
 
-          {/* LEFT INFO */}
+          {/* =================================================
+              INFORMATION PANEL
+          ================================================= */}
 
           <div style={styles.infoPanel}>
 
@@ -570,11 +566,11 @@ function DoctorAvailability() {
 
               <div>
 
-                <strong>
+                <strong style={styles.infoRowStrong}>
                   30 minute slots
                 </strong>
 
-                <p>
+                <p style={styles.infoRowText}>
                   Appointments are automatically
                   divided into 30-minute slots.
                 </p>
@@ -592,11 +588,11 @@ function DoctorAvailability() {
 
               <div>
 
-                <strong>
+                <strong style={styles.infoRowStrong}>
                   Weekly schedule
                 </strong>
 
-                <p>
+                <p style={styles.infoRowText}>
                   Your selected date determines
                   the working day.
                 </p>
@@ -614,11 +610,11 @@ function DoctorAvailability() {
 
               <div>
 
-                <strong>
+                <strong style={styles.infoRowStrong}>
                   Secure access
                 </strong>
 
-                <p>
+                <p style={styles.infoRowText}>
                   Only your authenticated doctor
                   account can manage availability.
                 </p>
@@ -630,7 +626,9 @@ function DoctorAvailability() {
           </div>
 
 
-          {/* FORM CARD */}
+          {/* =================================================
+              FORM CARD
+          ================================================= */}
 
           <form
             onSubmit={saveAvailability}
@@ -683,7 +681,7 @@ function DoctorAvailability() {
             </div>
 
 
-            {/* TIMES */}
+            {/* TIME */}
 
             <div style={styles.timeGrid}>
 
@@ -758,7 +756,7 @@ function DoctorAvailability() {
             </div>
 
 
-            {/* SUBMIT */}
+            {/* SAVE BUTTON */}
 
             <button
               type="submit"
@@ -783,13 +781,13 @@ function DoctorAvailability() {
                   </span>
 
                   Saving availability...
-
                 </>
 
               ) : (
 
                 <>
                   Save Availability
+
                   <span style={styles.buttonArrow}>
                     →
                   </span>
@@ -799,7 +797,6 @@ function DoctorAvailability() {
 
             </button>
 
-
           </form>
 
         </section>
@@ -807,9 +804,9 @@ function DoctorAvailability() {
       </main>
 
 
-      {/* =====================================================
+      {/* =================================================
           FOOTER
-      ===================================================== */}
+      ================================================= */}
 
       <footer style={styles.footer}>
 
@@ -863,9 +860,7 @@ const styles = {
   },
 
 
-  /* =========================
-     HEADER
-  ========================= */
+  /* HEADER */
 
   header: {
     minHeight: "76px",
@@ -991,9 +986,7 @@ const styles = {
   },
 
 
-  /* =========================
-     LOADING
-  ========================= */
+  /* LOADING */
 
   loadingPage: {
     minHeight: "calc(100vh - 76px)",
@@ -1031,9 +1024,7 @@ const styles = {
   },
 
 
-  /* =========================
-     MAIN
-  ========================= */
+  /* MAIN */
 
   main: {
     width: "min(1120px, 92%)",
@@ -1054,9 +1045,7 @@ const styles = {
   },
 
 
-  /* =========================
-     PAGE HEADER
-  ========================= */
+  /* PAGE HEADER */
 
   pageHeader: {
     display: "flex",
@@ -1125,9 +1114,7 @@ const styles = {
   },
 
 
-  /* =========================
-     ALERTS
-  ========================= */
+  /* ALERTS */
 
   success: {
     display: "flex",
@@ -1190,9 +1177,7 @@ const styles = {
   },
 
 
-  /* =========================
-     CONTENT LAYOUT
-  ========================= */
+  /* CONTENT */
 
   layout: {
     display: "grid",
@@ -1203,9 +1188,7 @@ const styles = {
   },
 
 
-  /* =========================
-     INFO PANEL
-  ========================= */
+  /* INFO PANEL */
 
   infoPanel: {
     background:
@@ -1266,8 +1249,10 @@ const styles = {
     flexShrink: 0,
   },
 
-  infoRow strong: {
+  infoRowStrong: {
+    color: "#FFFFFF",
     fontSize: "11px",
+    fontWeight: "700",
   },
 
   infoRowText: {
@@ -1278,9 +1263,7 @@ const styles = {
   },
 
 
-  /* =========================
-     FORM CARD
-  ========================= */
+  /* FORM CARD */
 
   card: {
     background: "#EAF7F6",
@@ -1326,9 +1309,7 @@ const styles = {
   },
 
 
-  /* =========================
-     FORM FIELDS
-  ========================= */
+  /* FORM */
 
   field: {
     marginBottom: "19px",
@@ -1368,9 +1349,7 @@ const styles = {
   },
 
 
-  /* =========================
-     PREVIEW
-  ========================= */
+  /* PREVIEW */
 
   preview: {
     display: "flex",
@@ -1415,9 +1394,7 @@ const styles = {
   },
 
 
-  /* =========================
-     BUTTON
-  ========================= */
+  /* BUTTON */
 
   saveButton: {
     width: "100%",
@@ -1447,9 +1424,7 @@ const styles = {
   },
 
 
-  /* =========================
-     FOOTER
-  ========================= */
+  /* FOOTER */
 
   footer: {
     borderTop: "1px solid #0E5363",
