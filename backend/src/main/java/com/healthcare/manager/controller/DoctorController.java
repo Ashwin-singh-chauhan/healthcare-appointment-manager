@@ -45,4 +45,15 @@ public class DoctorController {
                         ResponseEntity.notFound().build()
                 );
     }
+    @GetMapping("/me")
+    public ResponseEntity<Doctor> getMyDoctor(
+            org.springframework.security.core.Authentication authentication
+    ) {
+
+        String email = authentication.getName();
+
+        return doctorRepository.findByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
