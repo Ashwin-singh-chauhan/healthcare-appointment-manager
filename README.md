@@ -529,14 +529,14 @@ Authentication-protected endpoints require a valid JWT token.
 
 The primary goals of the system are:
 
--Simplify healthcare appointment scheduling.
--Provide separate workflows for patients, doctors, and administrators.
--Prevent appointment conflicts and double booking.
--Secure sensitive healthcare-related application data.
--Provide a scalable backend architecture.
--Support AI-assisted healthcare workflows.
--Integrate appointment scheduling with external services.
--Provide a deployment-ready full-stack application.
+- Simplify healthcare appointment scheduling.
+- Provide separate workflows for patients, doctors, and administrators.
+- Prevent appointment conflicts and double booking.
+- Secure sensitive healthcare-related application data.
+- Provide a scalable backend architecture.
+- Support AI-assisted healthcare workflows.
+- Integrate appointment scheduling with external services.
+- Provide a deployment-ready full-stack application.
 
 ## 👨‍💻 Author
 
