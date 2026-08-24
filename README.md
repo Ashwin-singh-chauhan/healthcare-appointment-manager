@@ -392,15 +392,15 @@ Patient Dashboard
 
 The application follows several security practices:
 
--JWT authentication
--Role-based authorization
--Protected API endpoints
--Password hashing
--Environment-based secrets
--CORS configuration
--Server-side validation
--Database-level persistence
--No credentials committed to source control
+- JWT authentication
+- Role-based authorization
+- Protected API endpoints
+- Password hashing
+- Environment-based secrets
+- CORS configuration
+- Server-side validation
+- Database-level persistence
+- No credentials committed to source control
 
 ## 🧪 Testing
 
